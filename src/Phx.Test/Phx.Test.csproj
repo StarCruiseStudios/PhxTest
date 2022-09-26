@@ -10,7 +10,7 @@
     <Import Project="../../resources/build/PhxLib.common.props" Condition="Exists('../../resources/build/PhxLib.common.props')"/>
     <Import Project="../../resources/build/NugetProperties.props" Condition="Exists('../../resources/build/NugetProperties.props')"/>
     <PropertyGroup>
-        <Version>$(PhxLibMajorVersion).0.1</Version>
+        <Version>$(VersionPhxTest)</Version>
         <Description>Test verification and execution utilities.</Description>
         <PackageProjectUrl>https://github.com/StarCruiseStudios/PhxTest</PackageProjectUrl>
         <RepositoryUrl>https://github.com/StarCruiseStudios/PhxTest</RepositoryUrl>
