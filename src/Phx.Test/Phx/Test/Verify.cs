@@ -6,27 +6,19 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-using System;
-using System.Diagnostics.CodeAnalysis;
-using Phx.Validation;
+namespace Phx.Test {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using Phx.Validation;
 
-namespace Phx.Test
-{
-    /// <summary>
-    ///     Contains verification methods that throw a verification exception if evaluated unsuccessfully.
-    /// </summary>
-    public static class Verify
-    {
-        /// <summary>
-        ///     Throws an <see cref="VerificationFailedException"/> if a verification fails on a value.
-        /// </summary>
+    /// <summary> Contains verification methods that throw a verification exception if evaluated unsuccessfully. </summary>
+    public static class Verify {
+        /// <summary> Throws an <see cref="VerificationFailedException" /> if a verification fails on a value. </summary>
         /// <param name="result"> The verification result to evaluate. </param>
         /// <param name="failureMessage"> The message to use in case of a verification failure. </param>
         /// <exception cref="VerificationFailedException"> Thrown if the provided result is a failure. </exception>
-        public static void That(ValidationResult result, string failureMessage = "Verification failed.")
-        {
-            switch (result)
-            {
+        public static void That(ValidationResult result, string failureMessage = "Verification failed.") {
+            switch (result) {
                 case SuccessResult:
                     break;
                 case FailureResult failure:
@@ -39,14 +31,11 @@ namespace Phx.Test
             }
         }
 
-        /// <summary>
-        ///     Throws an <see cref="VerificationFailedException"/> because a verification fails.
-        /// </summary>
+        /// <summary> Throws an <see cref="VerificationFailedException" /> because a verification fails. </summary>
         /// <param name="reason"> The message that describes the case of the verification failure. </param>
         /// <exception cref="VerificationFailedException"> Thrown when the method is invoked. </exception>
         [DoesNotReturn]
-        public static void Fail(string reason)
-        {
+        public static void Fail(string reason) {
             throw new VerificationFailedException(reason);
         }
     }

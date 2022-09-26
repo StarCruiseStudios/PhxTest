@@ -6,76 +6,53 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-using System;
+namespace Phx.Test {
+    using System;
 
-namespace Phx.Test
-{
-    /// <summary>
-    ///     Static class that provides utilities for running tests.
-    /// </summary>
-    public static class TestUtils
-    {
-        /// <summary>
-        ///     Runs a test and validates that an error of the specified type was thrown.
-        /// </summary>
+    /// <summary> Static class that provides utilities for running tests. </summary>
+    public static class TestUtils {
+        /// <summary> Runs a test and validates that an error of the specified type was thrown. </summary>
         /// <typeparam name="T"> The type of error to catch. </typeparam>
         /// <param name="test"> The test to run. </param>
         /// <returns> The caught exception. </returns>
-        public static T TestForError<T>(Action test) where T : Exception
-        {
+        public static T TestForError<T>(Action test) where T : Exception {
             T? caughtException = null;
-            try
-            {
+            try {
                 test();
-            }
-            catch (T e)
-            {
+            } catch (T e) {
                 caughtException = e;
                 Console.WriteLine($"Caught expected error: {e}");
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Console.WriteLine($"Caught unexpected error: {e}");
                 throw;
             }
 
-            if (caughtException == null)
-            {
+            if (caughtException == null) {
                 Verify.Fail($"Did not catch expected exception {typeof(T).Name}.");
             }
 
             return caughtException;
         }
 
-        /// <summary>
-        ///     Runs a test and validates that an error of the specified type was thrown.
-        /// </summary>
+        /// <summary> Runs a test and validates that an error of the specified type was thrown. </summary>
         /// <param name="exceptionType"> The type of error to catch. </param>
         /// <param name="test"> The test to run. </param>
         /// <returns> The caught exception. </returns>
-        public static Exception TestForError(Type exceptionType, Action test)
-        {
+        public static Exception TestForError(Type exceptionType, Action test) {
             Exception? caughtException = null;
-            try
-            {
+            try {
                 test();
-            }
-            catch (Exception e)
-            {
-                if (exceptionType.IsInstanceOfType(e))
-                {
+            } catch (Exception e) {
+                if (exceptionType.IsInstanceOfType(e)) {
                     caughtException = e;
                     Console.WriteLine($"Caught expected error: {e}");
-                }
-                else
-                {
+                } else {
                     Console.WriteLine($"Caught unexpected error: {e}");
                     throw;
                 }
             }
 
-            if (caughtException == null)
-            {
+            if (caughtException == null) {
                 Verify.Fail($"Did not catch expected exception {exceptionType.Name}.");
             }
 

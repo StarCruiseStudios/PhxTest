@@ -6,40 +6,29 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-using System.Diagnostics;
-using Phx.Lang;
+namespace Phx.Test {
+    using System.Diagnostics;
+    using Phx.Lang;
 
-namespace Phx.Test
-{
-    /// <summary>
-    ///     An <see cref="ICheckedDisposable"/> that can be set and used inside test cases.
-    /// </summary>
+    /// <summary> An <see cref="ICheckedDisposable" /> that can be set and used inside test cases. </summary>
     [DebuggerDisplay(IDebugDisplay.DEBUGGER_DISPLAY_STRING)]
-    public sealed class TestDisposable : ICheckedDisposable, IDebugDisplay
-    {
-        /// <summary>
-        ///     Gets a value that indicates whether the object is disposed.
-        /// </summary>
+    public sealed class TestDisposable : ICheckedDisposable, IDebugDisplay {
+        /// <summary> Gets a value that indicates whether the object is disposed. </summary>
         public bool IsDisposed { get; private set; }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TestDisposable"/> class.
-        /// </summary>
-        /// <param name="isDisposed"> Set to <c>true</c> if the object is disposed. </param>
-        public TestDisposable(bool isDisposed)
-        {
+        /// <summary> Initializes a new instance of the <see cref="TestDisposable" /> class. </summary>
+        /// <param name="isDisposed"> Set to <c> true </c> if the object is disposed. </param>
+        public TestDisposable(bool isDisposed) {
             IsDisposed = isDisposed;
         }
 
         /// <inheritdoc />
-        public void Dispose()
-        {
+        public void Dispose() {
             IsDisposed = true;
         }
 
         /// <inheritdoc />
-        public string ToDebugDisplay()
-        {
+        public string ToDebugDisplay() {
             return $"{this} {{ IsDisposed: {IsDisposed} }}";
         }
     }
