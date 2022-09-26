@@ -9,6 +9,9 @@
 <Project>
     <PropertyGroup>
         <PhxLibMajorVersion>0</PhxLibMajorVersion>
+        <VersionPhxLib>$(PhxLibMajorVersion).0.1</VersionPhxLib>
+        <VersionPhxTest>$(PhxLibMajorVersion).0.1</VersionPhxTest>
+        <VersionPhxValidation>$(PhxLibMajorVersion).0.1</VersionPhxValidation>
         
         <VersionCoverletCollector>3.1.2</VersionCoverletCollector>
         <VersionMicrosoftNETTestSdk>17.1.0</VersionMicrosoftNETTestSdk>

@@ -1,0 +1,40 @@
+<!--
+  <copyright file="NugetProperties.props" company="Star Cruise Studios LLC">
+      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
+      Licensed under the Apache License 2.0 License.
+      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
+  </copyright>
+-->
+
+<Project>
+    <PropertyGroup>
+        <PackageId>$(MSBuildProjectName)</PackageId>
+        <Authors>Star Cruise Studios LLC</Authors>
+        <Company>Star Cruise Studios LLC</Company>
+        <Copyright>Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.</Copyright>
+        <RepositoryType>Github</RepositoryType>
+        <PackageTags>PhxLib</PackageTags>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <LangVersion>9.0</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../../LICENSE.txt" Pack="true" PackagePath="$(PackageLicenseFile)"/>
+        <None Include="../../resources/logo/PhxLib.png" Pack="true" PackagePath="$(PackageIcon)"/>
+    </ItemGroup>
+
+    <Target Name="NugetPackageLocal">
+        <Message Text="Begin Nuget pack for local $(PackageId).$(Version)." Importance="high"/>
+        <Exec Command="dotnet pack -p:SymbolPackageFormat=symbols.nupkg -c Release"/>
+    </Target>
+    <Target Name="NugetLocal" DependsOnTargets="NugetPackageLocal">
+        <Message Text="Begin Nuget push to local $(PackageId).$(Version) to $(NUGET_LOCAL_REPO)." Importance="high"/>
+        <Exec Command="nuget add bin\Release\$(PackageId).$(Version).symbols.nupkg -source $(NUGET_LOCAL_REPO)"/>
+    </Target>
+</Project>
