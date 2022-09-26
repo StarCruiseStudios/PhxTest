@@ -1,0 +1,24 @@
+<!--
+  <copyright file="Phx.Test.Tests.csproj" company="Star Cruise Studios LLC">
+      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
+      Licensed under the Apache License 2.0 License.
+      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
+  </copyright>
+-->
+
+<Project Sdk="Microsoft.NET.Sdk">
+<Import Project="../../resources/build/PhxLib.common.props" Condition="Exists('../../resources/build/PhxLib.common.props')" />
+    <Import Project="../../resources/build/PhxLib.test.common.props" Condition="Exists('../../resources/build/PhxLib.test.common.props')" />
+
+    <ItemGroup>
+        <ProjectReference Include="..\Phx.Test\Phx.Test.csproj" />
+    </ItemGroup>
+
+    <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
+        </PropertyGroup>
+        <Error Condition="!Exists('../../resources/build/PhxLib.common.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))" />
+        <Error Condition="!Exists('../../resources/build/PhxLib.test.common.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.test.common.props'))" />
+    </Target>
+</Project>
