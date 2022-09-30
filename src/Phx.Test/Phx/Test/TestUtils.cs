@@ -8,9 +8,38 @@
 
 namespace Phx.Test {
     using System;
+    using Phx.Validation;
 
     /// <summary> Static class that provides utilities for running tests. </summary>
     public static class TestUtils {
+        /// <summary> Runs a test and validates that an error of the specified type was thrown. </summary>
+        /// <typeparam name="T"> The type of error to catch. </typeparam>
+        /// <param name="test"> The test to run. </param>
+        /// <returns> The caught exception. </returns>
+        public static ValidationResult DoesThrow<T>(this Action test) where T : Exception {
+            try {
+                TestForError<T>(test);
+            } catch (Exception e) {
+                return ValidationResult.Failure(e);
+            }
+
+            return ValidationResult.Success();
+        }
+
+        /// <summary> Runs a test and validates that an error of the specified type was thrown. </summary>
+        /// <param name="test"> The test to run. </param>
+        /// <param name="exceptionType"> The type of error to catch. </param>
+        /// <returns> The caught exception. </returns>
+        public static ValidationResult DoesThrow(this Action test, Type exceptionType) {
+            try {
+                TestForError(exceptionType, test);
+            } catch (Exception e) {
+                return ValidationResult.Failure(e);
+            }
+
+            return ValidationResult.Success();
+        }
+
         /// <summary> Runs a test and validates that an error of the specified type was thrown. </summary>
         /// <typeparam name="T"> The type of error to catch. </typeparam>
         /// <param name="test"> The test to run. </param>
