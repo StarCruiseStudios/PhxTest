@@ -8,6 +8,7 @@
 
 namespace Phx.Test {
     using System.Diagnostics;
+    using Phx.Debug;
     using Phx.Lang;
 
     /// <summary> An <see cref="ICheckedDisposable" /> that can be set and used inside test cases. </summary>
