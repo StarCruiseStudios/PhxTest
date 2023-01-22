@@ -77,6 +77,18 @@ namespace Phx.Test {
         }
 
         /// <summary>
+        /// Defines an event that will occur at a later time. This should be an action that is under test,
+        /// but that will not be executed immediately. This is typically used with a verification that an
+        /// action throws an exception.
+        /// </summary>
+        /// <param name="description"> Provides more details about the action that will be executed. </param>
+        /// <param name="action">The action that will be executed.</param>
+        /// <returns>The action that should be executed.</returns>
+        public Action DeferredWhen(string description, Action action) {
+            return LogContext.DeferredWhen(description, action);
+        }
+
+        /// <summary>
         ///     Defines an expected outcome of a test. This should be an assertion on a value that is returned from an action
         ///     under test.
         /// </summary>

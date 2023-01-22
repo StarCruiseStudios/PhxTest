@@ -32,8 +32,8 @@ namespace Phx.Test.Example {
             var accumulator = Given("An accumulator instance", () => new Accumulator());
             var valueToAdd = Given("A negative number", () => -10);
 
-            var action = When<Action>("The value is added to the accumulator",
-                    () => { return () => { accumulator.Add(valueToAdd); }; });
+            var action = DeferredWhen("The value is added to the accumulator",
+                    () => accumulator.Add(valueToAdd));
 
             Then("The expected exception is thrown",
                     typeof(InvalidOperationException),

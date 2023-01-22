@@ -12,6 +12,7 @@
     <PropertyGroup>
         <Version>$(VersionPhxTest)</Version>
         <Description>Test verification and execution utilities.</Description>
+        <Copyright>Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.</Copyright>
         <PackageProjectUrl>https://github.com/StarCruiseStudios/PhxTest</PackageProjectUrl>
         <RepositoryUrl>https://github.com/StarCruiseStudios/PhxTest</RepositoryUrl>
     </PropertyGroup>
