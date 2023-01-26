@@ -46,39 +46,37 @@ public class AccumulatorTests : LoggingTestClass {
 Will generate the following output:
 
 ```markdown
- 
----------------------------------------- 
-## Phx.Test.Example.AccumulatorTests.APositiveValueCanBeAdded 
- 
-**Given:** 
-  * An accumulator instance : Phx.Test.Example.Accumulator -> **PASSED** 
-  * A positive number : 10 -> **PASSED** 
- 
-**When:** 
-  * The value is added to the accumulator -> **PASSED** 
- 
-**Then:** 
-  * The accumulator has the expected total (10) -> **PASSED** 
- 
+----------------------------------------
+## Phx.Test.Example.AccumulatorTests.APositiveValueCanBeAdded
+
+**Given:**
+* An accumulator instance : `Phx.Test.Example.Accumulator` -> **PASSED**
+* A positive number : `10` -> **PASSED**
+
+**When:**
+* The value is added to the accumulator -> **PASSED**
+
+**Then:**
+* The accumulator has the expected total (`10`) -> **PASSED**
+
 > TestResult: **PASSED**
 
  
----------------------------------------- 
-## Phx.Test.Example.AccumulatorTests.ANegativeValueCannotBeAdded 
-     
-**Given:** 
-  * An accumulator instance : Phx.Test.Example.Accumulator -> **PASSED** 
-  * A negative number : -10 -> **PASSED** 
- 
-**When:** 
-  * The value is added to the accumulator -> **DEFERRED**
+----------------------------------------
+## Phx.Test.Example.AccumulatorTests.ANegativeValueCannotBeAdded
+
+**Given:**
+* An accumulator instance : `Phx.Test.Example.Accumulator` -> **PASSED**
+* A negative number : `-10` -> **PASSED**
+
+**When:**
+* The value is added to the accumulator -> **DEFERRED**
 
 **Then:**
 * A deferred action is executed: `The value is added to the accumulator` -> **PASSED**
-* The expected exception is thrown (System.InvalidOperationException) -> **PASSED**
+* The expected exception is thrown (`System.InvalidOperationException`) -> **PASSED**
 
 > TestResult: **PASSED**
-
 ```
 
 ## Set up

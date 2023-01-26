@@ -17,8 +17,8 @@ namespace Phx.Test {
     /// <summary> Provides helper methods for readability and auditing of test values. </summary>
     public sealed class TestLogContext {
         private const string TEST_SEPARATOR = "----------------------------------------";
-        private const string EVALUATION_DELIMITER = " : ";
-        private const string EXPECTATION_FORMAT = " ({0})";
+        private const string EVALUATION_FORMAT = " : `{0}`";
+        private const string EXPECTATION_FORMAT = " (`{0}`)";
 
         private readonly ILogger logger;
         private readonly List<TestStep> testSteps = new();
@@ -47,7 +47,7 @@ namespace Phx.Test {
             var messageBuilder = new StringBuilder(description);
             try {
                 var evaluated = value();
-                _ = messageBuilder.Append(EVALUATION_DELIMITER).Append(evaluated.ToDebugDisplayString());
+                _ = messageBuilder.AppendFormat(EVALUATION_FORMAT, evaluated.ToDebugDisplayString());
                 result = TestResults.PASSED;
                 return evaluated;
             }
@@ -75,7 +75,7 @@ namespace Phx.Test {
             var messageBuilder = new StringBuilder(description);
             try {
                 var evaluated = action();
-                _ = messageBuilder.Append(EVALUATION_DELIMITER).Append(evaluated.ToDebugDisplayString());
+                _ = messageBuilder.AppendFormat(EVALUATION_FORMAT, evaluated.ToDebugDisplayString());
                 result = TestResults.PASSED;
                 return evaluated;
             }
@@ -132,7 +132,7 @@ namespace Phx.Test {
             var messageBuilder = new StringBuilder(description);
             try {
                 var evaluated = assertion();
-                _ = messageBuilder.Append(EVALUATION_DELIMITER).Append(evaluated.ToDebugDisplayString());
+                _ = messageBuilder.AppendFormat(EVALUATION_FORMAT, evaluated.ToDebugDisplayString());
                 result = TestResults.PASSED;
                 return evaluated;
             }
@@ -179,7 +179,7 @@ namespace Phx.Test {
 
             try {
                 var evaluated = assertion(expectedValue);
-                _ = messageBuilder.Append(EVALUATION_DELIMITER).Append(evaluated.ToDebugDisplayString());
+                _ = messageBuilder.AppendFormat(EVALUATION_FORMAT, evaluated.ToDebugDisplayString());
                 result = TestResults.PASSED;
                 return evaluated;
             }
