@@ -21,8 +21,8 @@ namespace Phx.Test {
         private const string GIVEN = "Given";
         private const string WHEN = "When";
         private const string THEN = "Then";
-        private const string TEST_RESULT_PASSED = "TestResult: PASSED";
-        private const string TEST_RESULT_FAILED = "TestResult: FAILED";
+        private const string TEST_RESULT_PASSED = "TestResult: **PASSED**";
+        private const string TEST_RESULT_FAILED = "TestResult: **FAILED**";
 
         [Test]
         public void LogContextLogsSuccessfulTest() {
@@ -123,6 +123,47 @@ namespace Phx.Test {
             Received.InOrder(() => {
                 logger.Info(Arg.Is<string>(it => it.Contains(WHEN)));
                 logger.Info(Arg.Is<string>(it => it.Contains(message)));
+            });
+        }
+        
+        [Test]
+        public void DeferredWhenIsLogged() {
+            var logger = Substitute.For<ILogger>();
+            logger.Info(Arg.Do<string>(x => testLogger.Info(x)));
+            var logContext = new TestLogContext(logger);
+            const string message = "test action";
+            var executed = false;
+
+            logContext.LogStart(TEST_NAME);
+            var action = logContext.DeferredWhen(message, () => executed = true);
+            action();
+            logContext.LogEnd(true);
+
+            Verify.That(executed.IsTrue());
+            Received.InOrder(() => {
+                logger.Info(Arg.Is<string>(it => it.Contains(WHEN)));
+                logger.Info(Arg.Is<string>(it => it.Contains(message)));
+                logger.Info(Arg.Is<string>(it => it.Contains(THEN)));
+                logger.Info(Arg.Is<string>(it => it.Contains(message)));
+            });
+        }
+        
+        [Test]
+        public void TestFailsWhenDeferredActionIsNotExecuted() {
+            var logger = Substitute.For<ILogger>();
+            logger.Info(Arg.Do<string>(x => testLogger.Info(x)));
+            var logContext = new TestLogContext(logger);
+            const string message = "test action";
+            var executed = false;
+
+            logContext.LogStart(TEST_NAME);
+            var action = logContext.DeferredWhen(message, () => executed = true);
+            Verify.That(executed.IsFalse());
+            logContext.LogEnd(true);
+
+            Received.InOrder(() => {
+                logger.Info(Arg.Is<string>(it => it.Contains("Deferred Action was not executed")));
+                logger.Info(Arg.Is<string>(it => it.Contains(TEST_RESULT_FAILED)));
             });
         }
 

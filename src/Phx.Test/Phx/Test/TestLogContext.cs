@@ -16,12 +16,12 @@ namespace Phx.Test {
     /// <summary> Provides helper methods for readability and auditing of test values. </summary>
     public sealed class TestLogContext {
         private const string TEST_SEPARATOR = "----------------------------------------";
-        private const string LOG_SPACER = "     --------------------";
-        private const string EVALUATION_DELIMITER = " -> ";
-        private const string EXPECTATION_DELIMITER = " : ";
+        private const string EVALUATION_DELIMITER = " : ";
+        private const string EXPECTATION_FORMAT = " ({0})";
 
         private readonly ILogger logger;
         private readonly List<TestStep> testSteps = new();
+        private readonly List<DeferredTestAction> deferredActions = new();
 
         /// <summary> Initializes a new instance of the <see cref="TestLogContext" /> class. </summary>
         /// <param name="logger"> The logger used to log test steps and results. </param>
@@ -107,7 +107,9 @@ namespace Phx.Test {
         /// <returns>The action that should be executed.</returns>
         public Action DeferredWhen(string description, Action action) {
             testSteps.Add(new ExecutionStep(TestSteps.When, TestResults.DEFERRED, description));
-            return action;
+            var deferredAction = new DeferredTestAction(description, action, this);
+            deferredActions.Add(deferredAction);
+            return deferredAction.Execute;
         }
 
         /// <summary>
@@ -165,8 +167,7 @@ namespace Phx.Test {
         public T Then<T, U>(string description, U expectedValue, Func<U, T> assertion) {
             var result = TestResults.FAILED;
             var messageBuilder = new StringBuilder(description)
-                    .Append(EXPECTATION_DELIMITER)
-                    .Append(expectedValue.ToDebugDisplayString());
+                    .AppendFormat(EXPECTATION_FORMAT, expectedValue.ToDebugDisplayString());
 
             try {
                 var evaluated = assertion(expectedValue);
@@ -193,8 +194,7 @@ namespace Phx.Test {
         public void Then<U>(string description, U expectedValue, Action<U> assertion) {
             var result = TestResults.FAILED;
             var messageBuilder = new StringBuilder(description)
-                    .Append(EXPECTATION_DELIMITER)
-                    .Append(expectedValue.ToDebugDisplayString());
+                    .AppendFormat(EXPECTATION_FORMAT, expectedValue.ToDebugDisplayString());
             try {
                 assertion(expectedValue);
                 result = TestResults.PASSED;
@@ -217,8 +217,7 @@ namespace Phx.Test {
             logger.Info(string.Empty);
             logger.Info(TEST_SEPARATOR);
             if (displayName != null) {
-                logger.Info(displayName);
-                logger.Info(LOG_SPACER);
+                logger.Info($"## {displayName}");
             }
         }
 
@@ -230,7 +229,18 @@ namespace Phx.Test {
             var result = success
                     ? TestResults.PASSED
                     : TestResults.FAILED;
-            logger.Info($"     TestResult: {result}");
+
+            if (result == TestResults.PASSED) {
+                foreach (var deferredAction in deferredActions) {
+                    if (!deferredAction.HasExecuted) {
+                        result = TestResults.FAILED;
+                        logger.Info($"> Deferred Action was not executed: `{deferredAction.Description}` -> **{result}**");
+                    }
+                }
+            }
+            
+            logger.Info(string.Empty);
+            logger.Info($"> TestResult: **{result}**");
         }
 
         private void LogSteps() {
@@ -238,7 +248,8 @@ namespace Phx.Test {
             foreach (var step in testSteps) {
                 if (step is ExecutionStep executionStep) {
                     if (prevStep != executionStep.Step) {
-                        logger.Info(executionStep.Step.ToString());
+                        logger.Info(string.Empty);
+                        logger.Info($"**{executionStep.Step}:**");
                         prevStep = executionStep.Step;
                     }
                 }
@@ -278,7 +289,7 @@ namespace Phx.Test {
             Result = result;
         }
 
-        public override string ToString() => $"  * {Message} [{Result}]";
+        public override string ToString() => $"  * {Message} -> **{Result}**";
     }
 
     internal sealed class LogStep : TestStep {

@@ -33,44 +33,52 @@ public class AccumulatorTests : LoggingTestClass {
         var accumulator = Given("An accumulator instance", () => new Accumulator());
         var valueToAdd = Given("A negative number", () => -10);
 
-        var action = When<Action>("The value is added to the accumulator",() => {
-            return () => { accumulator.Add(valueToAdd); };
-        });
+        var action = DeferredWhen("The value is added to the accumulator",
+                () => accumulator.Add(valueToAdd));
 
-        Then("The expected exception is thrown", typeof(InvalidOperationException),
-                (expectedExceptionType) => {
-                    Verify.That(action.DoesThrow(expectedExceptionType));
-                });
+        Then("The expected exception is thrown",
+                typeof(InvalidOperationException),
+                (expectedExceptionType) => { Verify.That(action.DoesThrow(expectedExceptionType)); });
     }
 }
 ```
 
 Will generate the following output:
 
-```text
- ---------------------------------------- 
- Phx.Test.Example.AccumulatorTests.APositiveValueCanBeAdded 
-      -------------------- 
- Given 
-   * An accumulator instance -> Phx.Test.Example.Accumulator [PASSED] 
-   * A positive number -> 10 [PASSED] 
- When 
-   * The value is added to the accumulator [PASSED] 
- Then 
-   * The accumulator has the expected total : 10 [PASSED] 
-      TestResult: PASSED 
+```markdown
+ 
+---------------------------------------- 
+## Phx.Test.Example.AccumulatorTests.APositiveValueCanBeAdded 
+ 
+**Given:** 
+  * An accumulator instance : Phx.Test.Example.Accumulator -> **PASSED** 
+  * A positive number : 10 -> **PASSED** 
+ 
+**When:** 
+  * The value is added to the accumulator -> **PASSED** 
+ 
+**Then:** 
+  * The accumulator has the expected total (10) -> **PASSED** 
+ 
+> TestResult: **PASSED**
 
- ---------------------------------------- 
- Phx.Test.Example.AccumulatorTests.ANegativeValueCannotBeAdded 
-      -------------------- 
- Given 
-   * An accumulator instance -> Phx.Test.Example.Accumulator [PASSED] 
-   * A negative number -> -10 [PASSED] 
- When 
-   * The value is added to the accumulator -> System.Action [PASSED] 
- Then 
-   * The expected exception is thrown : System.InvalidOperationException [PASSED] 
-      TestResult: PASSED 
+ 
+---------------------------------------- 
+## Phx.Test.Example.AccumulatorTests.ANegativeValueCannotBeAdded 
+     
+**Given:** 
+  * An accumulator instance : Phx.Test.Example.Accumulator -> **PASSED** 
+  * A negative number : -10 -> **PASSED** 
+ 
+**When:** 
+  * The value is added to the accumulator -> **DEFERRED**
+
+**Then:**
+* A deferred action is executed: `The value is added to the accumulator` -> **PASSED**
+* The expected exception is thrown (System.InvalidOperationException) -> **PASSED**
+
+> TestResult: **PASSED**
+
 ```
 
 ## Set up
