@@ -31,12 +31,15 @@ namespace Phx.Test {
 
         /// <summary> Defines a value that is part of the initial test context that will be operated on. </summary>
         /// <remarks>
-        ///     A function is provided instead of the direct value, so that any errors that occur while computing the value
-        ///     are handled and displayed correctly.
+        ///     A function is provided instead of the direct value, so that any errors that occur while
+        ///     computing the value are handled and displayed correctly.
         /// </remarks>
         /// <typeparam name="T"> The type of the given value. </typeparam>
         /// <param name="description"> Provides more details about the purpose of the value. </param>
-        /// <param name="value"> Computes the given value that is returned so it can be assigned to a test variable. </param>
+        /// <param name="value">
+        ///     Computes the given value that is returned so it can be assigned to a test
+        ///     variable.
+        /// </param>
         /// <returns> The computed test value. </returns>
         public T Given<T>(string description, Func<T> value) {
             var result = TestResults.FAILED;
@@ -52,7 +55,10 @@ namespace Phx.Test {
             }
         }
 
-        /// <summary> Defines a state or condition that is part of the initial test context that will be operated on. </summary>
+        /// <summary>
+        ///     Defines a state or condition that is part of the initial test context that will be
+        ///     operated on.
+        /// </summary>
         /// <param name="description"> Provides more details about the purpose of the value. </param>
         public void Given(string description) {
             testSteps.Add(new ExecutionStep(TestSteps.Given, TestResults.PASSED, description));
@@ -98,13 +104,13 @@ namespace Phx.Test {
         }
 
         /// <summary>
-        /// Defines an event that will occur at a later time. This should be an action that is under test,
-        /// but that will not be executed immediately. This is typically used with a verification that an
-        /// action throws an exception.
+        ///     Defines an event that will occur at a later time. This should be an action that is under
+        ///     test, but that will not be executed immediately. This is typically used with a verification
+        ///     that an action throws an exception.
         /// </summary>
         /// <param name="description"> Provides more details about the action that will be executed. </param>
-        /// <param name="action">The action that will be executed.</param>
-        /// <returns>The action that should be executed.</returns>
+        /// <param name="action"> The action that will be executed. </param>
+        /// <returns> The action that should be executed. </returns>
         public Action DeferredWhen(string description, Action action) {
             testSteps.Add(new ExecutionStep(TestSteps.When, TestResults.DEFERRED, description));
             var deferredAction = new DeferredTestAction(description, action, this);
@@ -113,8 +119,8 @@ namespace Phx.Test {
         }
 
         /// <summary>
-        ///     Defines an expected outcome of a test. This should be an assertion on a value that is returned from an action
-        ///     under test.
+        ///     Defines an expected outcome of a test. This should be an assertion on a value that is
+        ///     returned from an action under test.
         /// </summary>
         /// <typeparam name="T"> The type of value that is returned from the assertion. </typeparam>
         /// <param name="description"> Provides more details about the assertion. </param>
@@ -135,8 +141,8 @@ namespace Phx.Test {
         }
 
         /// <summary>
-        ///     Defines an expected outcome of a test. This should be an assertion on a value that is returned from an action
-        ///     under test.
+        ///     Defines an expected outcome of a test. This should be an assertion on a value that is
+        ///     returned from an action under test.
         /// </summary>
         /// <param name="description"> Provides more details about the assertion. </param>
         /// <param name="assertion"> The assertion to be performed. </param>
@@ -152,15 +158,16 @@ namespace Phx.Test {
         }
 
         /// <summary>
-        ///     Defines an expected outcome of a test. This should be an assertion on a value that is returned from an action
-        ///     under test.
+        ///     Defines an expected outcome of a test. This should be an assertion on a value that is
+        ///     returned from an action under test.
         /// </summary>
         /// <typeparam name="T"> The type of value that is returned from the assertion. </typeparam>
         /// <typeparam name="U"> The type of expected value is asserted. </typeparam>
         /// <param name="description"> Provides more details about the assertion. </param>
         /// <param name="expectedValue">
-        ///     The expected value that is validated by the assertion. This value is only provided for
-        ///     logging. No addition validation is performed beyond the provided assertion function.
+        ///     The expected value that is validated by the assertion. This value is
+        ///     only provided for logging. No addition validation is performed beyond the provided assertion
+        ///     function.
         /// </param>
         /// <param name="assertion"> The assertion to be performed. </param>
         /// <returns> The result of performing the assertion. </returns>
@@ -181,14 +188,15 @@ namespace Phx.Test {
         }
 
         /// <summary>
-        ///     Defines an expected outcome of a test. This should be an assertion on a value that is returned from an action
-        ///     under test.
+        ///     Defines an expected outcome of a test. This should be an assertion on a value that is
+        ///     returned from an action under test.
         /// </summary>
         /// <typeparam name="U"> The type of expected value is asserted. </typeparam>
         /// <param name="description"> Provides more details about the assertion. </param>
         /// <param name="expectedValue">
-        ///     The expected value that is validated by the assertion. This value is only provided for
-        ///     logging. No addition validation is performed beyond the provided assertion function.
+        ///     The expected value that is validated by the assertion. This value is
+        ///     only provided for logging. No addition validation is performed beyond the provided assertion
+        ///     function.
         /// </param>
         /// <param name="assertion"> The assertion to be performed. </param>
         public void Then<U>(string description, U expectedValue, Action<U> assertion) {
@@ -234,11 +242,12 @@ namespace Phx.Test {
                 foreach (var deferredAction in deferredActions) {
                     if (!deferredAction.HasExecuted) {
                         result = TestResults.FAILED;
-                        logger.Info($"> Deferred Action was not executed: `{deferredAction.Description}` -> **{result}**");
+                        logger.Info(
+                                $"> Deferred Action was not executed: `{deferredAction.Description}` -> **{result}**");
                     }
                 }
             }
-            
+
             logger.Info(string.Empty);
             logger.Info($"> TestResult: **{result}**");
         }

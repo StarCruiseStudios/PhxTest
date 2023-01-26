@@ -24,7 +24,7 @@ namespace Phx.Test.Example {
 
             Then("The accumulator has the expected total",
                     10,
-                    (expected) => { Verify.That(accumulator.Total.IsEqualTo(expected)); });
+                    expected => { Verify.That(accumulator.Total.IsEqualTo(expected)); });
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace Phx.Test.Example {
 
             Then("The expected exception is thrown",
                     typeof(InvalidOperationException),
-                    (expectedExceptionType) => { Verify.That(action.DoesThrow(expectedExceptionType)); });
+                    expectedExceptionType => { Verify.That(action.DoesThrow(expectedExceptionType)); });
         }
     }
 }

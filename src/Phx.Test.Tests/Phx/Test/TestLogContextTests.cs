@@ -125,7 +125,7 @@ namespace Phx.Test {
                 logger.Info(Arg.Is<string>(it => it.Contains(message)));
             });
         }
-        
+
         [Test]
         public void DeferredWhenIsLogged() {
             var logger = Substitute.For<ILogger>();
@@ -147,7 +147,7 @@ namespace Phx.Test {
                 logger.Info(Arg.Is<string>(it => it.Contains(message)));
             });
         }
-        
+
         [Test]
         public void TestFailsWhenDeferredActionIsNotExecuted() {
             var logger = Substitute.For<ILogger>();
@@ -157,7 +157,7 @@ namespace Phx.Test {
             var executed = false;
 
             logContext.LogStart(TEST_NAME);
-            var action = logContext.DeferredWhen(message, () => executed = true);
+            var _ = logContext.DeferredWhen(message, () => executed = true);
             Verify.That(executed.IsFalse());
             logContext.LogEnd(true);
 
@@ -212,7 +212,7 @@ namespace Phx.Test {
             const int expectedValue = 10;
 
             logContext.LogStart(TEST_NAME);
-            var result = logContext.Then(message, expectedValue, (expected) => expected);
+            var result = logContext.Then(message, expectedValue, expected => expected);
             logContext.LogEnd(true);
 
             Verify.That(result.IsEqualTo(10));
@@ -231,7 +231,7 @@ namespace Phx.Test {
             const int expectedValue = 10;
 
             logContext.LogStart(TEST_NAME);
-            logContext.Then(message, expectedValue, (_) => { });
+            logContext.Then(message, expectedValue, _ => { });
             logContext.LogEnd(true);
 
             Received.InOrder(() => {

@@ -11,7 +11,10 @@ namespace Phx.Test {
     using System.Diagnostics.CodeAnalysis;
     using Phx.Validation;
 
-    /// <summary> Contains verification methods that throw a verification exception if evaluated unsuccessfully. </summary>
+    /// <summary>
+    ///     Contains verification methods that throw a verification exception if evaluated
+    ///     unsuccessfully.
+    /// </summary>
     public static class Verify {
         /// <summary> Throws an <see cref="VerificationFailedException" /> if a verification fails on a value. </summary>
         /// <param name="result"> The verification result to evaluate. </param>

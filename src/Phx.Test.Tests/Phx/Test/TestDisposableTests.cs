@@ -19,7 +19,7 @@ namespace Phx.Test {
             var d = new TestDisposable(false);
             d.Dispose();
             Verify.That(d.IsDisposed.IsTrue(),
-                    "Test desposable was not disposed correctly.");
+                    "Test disposable was not disposed correctly.");
         }
 
         [TestCase(true)]
