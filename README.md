@@ -116,8 +116,8 @@ Following conventions of BDD:
   in the test logs.
 * `Pending` is used to indicate that a test's implementation is pending 
   completion. By default, pending tests will cause a failure. Setting the
-  `PHX_TEST_FAIL_ON_PENDING` to  `false` or overriding the test class's 
-  `FailOnPending` property to `false` will cause the test to complete 
+  `PHX_TEST_FAIL_ON_PENDING` env var to `false` or overriding the test class's 
+  `FailOnPending` property to return `false` will cause the test to complete 
   successfully and ignore the pending scenario.
 
 ## Additional Test Utilities
