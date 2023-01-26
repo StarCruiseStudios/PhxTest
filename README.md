@@ -1,4 +1,4 @@
-# Phx.Test
+# PHX.Test
 
 A toolkit for improving self documentation, readability, and debugging of tests.
 
@@ -8,6 +8,7 @@ condition, action, and assertion in human readable text to assist in debugging
 what is occurring in a test and what is going wrong.
 
 This test class using Phx.Test:
+
 ```csharp
 [TestFixture]
 [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
@@ -32,44 +33,53 @@ public class AccumulatorTests : LoggingTestClass {
         var accumulator = Given("An accumulator instance", () => new Accumulator());
         var valueToAdd = Given("A negative number", () => -10);
 
-        var action = When<Action>("The value is added to the accumulator",() => {
-            return () => { accumulator.Add(valueToAdd); };
-        });
+        var action = DeferredWhen("The value is added to the accumulator",
+                () => accumulator.Add(valueToAdd));
 
-        Then("The expected exception is thrown", typeof(InvalidOperationException),
-                (expectedExceptionType) => {
-                    Verify.That(action.DoesThrow(expectedExceptionType));
-                });
+        Then("The expected exception is thrown",
+                typeof(InvalidOperationException),
+                (expectedExceptionType) => { Verify.That(action.DoesThrow(expectedExceptionType)); });
     }
 }
 ```
+
 Will generate the following output:
-```text
- ---------------------------------------- 
- Phx.Test.Example.AccumulatorTests.APositiveValueCanBeAdded 
-      -------------------- 
- Given 
-   * An accumulator instance -> Phx.Test.Example.Accumulator [PASSED] 
-   * A positive number -> 10 [PASSED] 
- When 
-   * The value is added to the accumulator [PASSED] 
- Then 
-   * The accumulator has the expected total : 10 [PASSED] 
-      TestResult: PASSED 
 
- ---------------------------------------- 
- Phx.Test.Example.AccumulatorTests.ANegativeValueCannotBeAdded 
-      -------------------- 
- Given 
-   * An accumulator instance -> Phx.Test.Example.Accumulator [PASSED] 
-   * A negative number -> -10 [PASSED] 
- When 
-   * The value is added to the accumulator -> System.Action [PASSED] 
- Then 
-   * The expected exception is thrown : System.InvalidOperationException [PASSED] 
-      TestResult: PASSED 
+```markdown
+ 
+---------------------------------------- 
+## Phx.Test.Example.AccumulatorTests.APositiveValueCanBeAdded 
+ 
+**Given:** 
+  * An accumulator instance : Phx.Test.Example.Accumulator -> **PASSED** 
+  * A positive number : 10 -> **PASSED** 
+ 
+**When:** 
+  * The value is added to the accumulator -> **PASSED** 
+ 
+**Then:** 
+  * The accumulator has the expected total (10) -> **PASSED** 
+ 
+> TestResult: **PASSED**
+
+ 
+---------------------------------------- 
+## Phx.Test.Example.AccumulatorTests.ANegativeValueCannotBeAdded 
+     
+**Given:** 
+  * An accumulator instance : Phx.Test.Example.Accumulator -> **PASSED** 
+  * A negative number : -10 -> **PASSED** 
+ 
+**When:** 
+  * The value is added to the accumulator -> **DEFERRED**
+
+**Then:**
+* A deferred action is executed: `The value is added to the accumulator` -> **PASSED**
+* The expected exception is thrown (System.InvalidOperationException) -> **PASSED**
+
+> TestResult: **PASSED**
+
 ```
-
 
 ## Set up
 
@@ -90,14 +100,18 @@ public class AccumulatorTests : LoggingTestClass {
 }
 ```
 
-The class will have access to the `Given`, `When`, `Then`, and `Log` methods 
-used to log test values and actions.
+The class will have access to the `Given`, `When`, `DeferredWhen`, `Then`, and 
+`Log` methods used to log test values and actions.
 
 Following conventions of BDD:
 * `Given` should be used to log test preconditions and input values, and will
   return the value for use in later test steps.
 * `When` should be used to log the action under test and returns the result of
   the action for validation.
+* `DeferredWhen` should be used when execution of the action under test must be
+  delayed to validate it correctly. This is typically used in conjunction with
+  a Then step to verify an exception was or was not thrown. If a deferred action
+  is not executed by the time the test completes, the test will fail.
 * `Then` should be used to validate the results of the action. An expected value
   can be passed in to be logged.
 * `Log` can also be used to log any test messages that you want to appear inline
@@ -138,10 +152,10 @@ Verify.That(action.DoesThrow<TestException>());
 
 ### Verify
 `Verify` is a [PHX.Validation](https://github.com/StarCruiseStudios/PhxValidation)
-validator that will throw a `VerificationFailedException` when the validation 
+validator that will throw a `VerificationFailedException` when the validation
 fails.
 
-Test validator extension methods are also provided to help verify that an 
+Test validator extension methods are also provided to help verify that an
 exception was thrown by an `Action`.
 ```csharp
 Verify.That(action.DoesThrow<TestException>());
