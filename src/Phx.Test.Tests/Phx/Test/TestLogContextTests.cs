@@ -21,8 +21,10 @@ namespace Phx.Test {
         private const string GIVEN = "Given";
         private const string WHEN = "When";
         private const string THEN = "Then";
+        private const string PENDING = "Pending";
         private const string TEST_RESULT_PASSED = "TestResult: **PASSED**";
         private const string TEST_RESULT_FAILED = "TestResult: **FAILED**";
+        private const string TEST_RESULT_PENDING = "TestResult: **PENDING**";
 
         [Test]
         public void LogContextLogsSuccessfulTest() {
@@ -159,7 +161,8 @@ namespace Phx.Test {
             logContext.LogStart(TEST_NAME);
             var _ = logContext.DeferredWhen(message, () => executed = true);
             Verify.That(executed.IsFalse());
-            logContext.LogEnd(true);
+            var action = () => logContext.LogEnd(true);
+            Verify.That(action.DoesThrow<VerificationFailedException>());
 
             Received.InOrder(() => {
                 logger.Info(Arg.Is<string>(it => it.Contains("Deferred Action was not executed")));
@@ -237,6 +240,24 @@ namespace Phx.Test {
             Received.InOrder(() => {
                 logger.Info(Arg.Is<string>(it => it.Contains(THEN)));
                 logger.Info(Arg.Is<string>(it => it.Contains(message) && it.Contains(expectedValue.ToString())));
+            });
+        }
+
+        [Test]
+        public void PendingIsLogged() {
+            var logger = Substitute.For<ILogger>();
+            logger.Info(Arg.Do<string>(x => testLogger.Info(x)));
+            var logContext = new TestLogContext(logger);
+            const string reason = "this is a test";
+
+            logContext.LogStart(TEST_NAME);
+            logContext.Pending(reason);
+            logContext.LogEnd(true);
+
+            Received.InOrder(() => {
+                logger.Info(Arg.Is<string>(it => it.Contains(PENDING)));
+                logger.Info(Arg.Is<string>(it => it.Contains(reason)));
+                logger.Info(Arg.Is<string>(it => it.Contains(TEST_RESULT_PENDING)));
             });
         }
 

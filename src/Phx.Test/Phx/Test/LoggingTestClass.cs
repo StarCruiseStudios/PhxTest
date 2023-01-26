@@ -21,6 +21,16 @@ namespace Phx.Test {
 
         protected TestLogContext LogContext { get; set; } = null!;
 
+        protected virtual bool FailOnPending {
+            get {
+                if (bool.TryParse(Environment.GetEnvironmentVariable("PHX_TEST_FAIL_ON_PENDING"), out var f)) {
+                    return f;
+                }
+
+                return true;
+            }
+        }
+
         protected LoggingTestClass() {
             logger = LogManager.GetLogger(GetType().FullName);
         }
@@ -151,6 +161,17 @@ namespace Phx.Test {
         /// <param name="assertion"> The assertion to be performed. </param>
         public void Then<U>(string description, U expectedValue, Action<U> assertion) {
             LogContext.Then(description, expectedValue, assertion);
+        }
+
+        /// <summary> Indicates that this test's implementation is pending completion and should be ignored. </summary>
+        /// <remarks> Invoking this method will cause a PENDING result for the test. </remarks>
+        /// <param name="reason"> The reason the test is pending completion. </param>
+        /// <exception cref="PendingException"> Thrown if the FailOnPending configuration is set to true. </exception>
+        public void Pending(string reason) {
+            LogContext.Pending(reason);
+            if (FailOnPending) {
+                throw new PendingException(reason);
+            }
         }
 
         /// <summary> Logs a message that will appear inline with the other test steps in the log output. </summary>

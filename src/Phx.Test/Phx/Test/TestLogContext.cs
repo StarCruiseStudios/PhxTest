@@ -12,6 +12,7 @@ namespace Phx.Test {
     using System.Text;
     using NLog;
     using Phx.Lang;
+    using Phx.Validation;
 
     /// <summary> Provides helper methods for readability and auditing of test values. </summary>
     public sealed class TestLogContext {
@@ -212,6 +213,12 @@ namespace Phx.Test {
             }
         }
 
+        /// <summary> Indicates that this test's implementation is pending completion and should be ignored. </summary>
+        /// <param name="reason"> The reason the test is pending completion. </param>
+        public void Pending(string reason) {
+            testSteps.Add(new ExecutionStep(TestSteps.Pending, TestResults.PENDING, reason));
+        }
+
         /// <summary> Logs a message that will appear inline with the other test steps in the log output. </summary>
         /// <param name="message"> The message to log. </param>
         public void Log(string message) {
@@ -233,29 +240,50 @@ namespace Phx.Test {
         /// <remarks> This method should be invoked from the test cleanup lifecycle method. </remarks>
         /// <param name="success"> A value indicating whether the test completed successfully. </param>
         public void LogEnd(bool success) {
-            LogSteps();
             var result = success
                     ? TestResults.PASSED
                     : TestResults.FAILED;
+            var hasUnexecutedDeferredActions = false;
 
-            if (result == TestResults.PASSED) {
-                foreach (var deferredAction in deferredActions) {
-                    if (!deferredAction.HasExecuted) {
-                        result = TestResults.FAILED;
-                        logger.Info(
-                                $"> Deferred Action was not executed: `{deferredAction.Description}` -> **{result}**");
+            var stepResults = LogSteps();
+            if (stepResults == TestResults.PASSED) {
+                if (result == TestResults.PASSED) {
+                    foreach (var deferredAction in deferredActions) {
+                        if (!deferredAction.HasExecuted) {
+                            result = TestResults.FAILED;
+                            logger.Info(
+                                    $"> Deferred Action was not executed: `{deferredAction.Description}` -> **{result}**");
+                            hasUnexecutedDeferredActions = true;
+                        }
                     }
                 }
+            } else {
+                result = stepResults;
             }
 
             logger.Info(string.Empty);
             logger.Info($"> TestResult: **{result}**");
+
+            Verify.That(hasUnexecutedDeferredActions.IsFalse(), "Test has unexecuted deferred actions.");
         }
 
-        private void LogSteps() {
+        private TestResults LogSteps() {
+            var testResult = TestResults.PASSED;
             TestSteps prevStep = TestSteps.None;
             foreach (var step in testSteps) {
                 if (step is ExecutionStep executionStep) {
+                    switch (executionStep.Result) {
+                        case TestResults.FAILED:
+                            if (testResult != TestResults.PENDING) {
+                                testResult = TestResults.FAILED;
+                            }
+
+                            break;
+                        case TestResults.PENDING:
+                            testResult = TestResults.PENDING;
+                            break;
+                    }
+
                     if (prevStep != executionStep.Step) {
                         logger.Info(string.Empty);
                         logger.Info($"**{executionStep.Step}:**");
@@ -265,6 +293,8 @@ namespace Phx.Test {
 
                 logger.Info(step.ToString());
             }
+
+            return testResult;
         }
     }
 
@@ -272,13 +302,15 @@ namespace Phx.Test {
         None,
         Given,
         When,
-        Then
+        Then,
+        Pending
     }
 
     internal enum TestResults {
         PASSED,
         FAILED,
-        DEFERRED
+        DEFERRED,
+        PENDING
     }
 
     internal abstract class TestStep {

@@ -116,6 +116,11 @@ Following conventions of BDD:
   can be passed in to be logged.
 * `Log` can also be used to log any test messages that you want to appear inline
   in the test logs.
+* `Pending` is used to indicate that a test's implementation is pending 
+  completion. By default, pending tests will cause a failure. Setting the
+  `PHX_TEST_FAIL_ON_PENDING` to  `false` or overriding the test class's 
+  `FailOnPending` property to `false` will cause the test to complete 
+  successfully and ignore the pending scenario.
 
 ## Additional Test Utilities
 PHX.Test also provides utilities to make writing and debugging tests easier.
