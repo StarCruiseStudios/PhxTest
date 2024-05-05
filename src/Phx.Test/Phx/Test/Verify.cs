@@ -37,7 +37,6 @@ namespace Phx.Test {
         /// <summary> Throws an <see cref="VerificationFailedException" /> because a verification fails. </summary>
         /// <param name="reason"> The message that describes the case of the verification failure. </param>
         /// <exception cref="VerificationFailedException"> Thrown when the method is invoked. </exception>
-        [DoesNotReturn]
         public static void Fail(string reason) {
             throw new VerificationFailedException(reason);
         }

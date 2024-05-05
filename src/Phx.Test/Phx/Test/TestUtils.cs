@@ -58,6 +58,7 @@ namespace Phx.Test {
 
             if (caughtException == null) {
                 Verify.Fail($"Did not catch expected exception {typeof(T).Name}.");
+                throw new InvalidOperationException("Verify.Fail will always throw and this will never be executed.");
             }
 
             return caughtException;
@@ -83,6 +84,7 @@ namespace Phx.Test {
 
             if (caughtException == null) {
                 Verify.Fail($"Did not catch expected exception {exceptionType.Name}.");
+                throw new InvalidOperationException("Verify.Fail will always throw and this will never be executed.");
             }
 
             return caughtException;

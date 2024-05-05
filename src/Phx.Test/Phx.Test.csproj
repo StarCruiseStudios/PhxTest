@@ -7,32 +7,15 @@
 -->
 
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../../resources/build/PhxLib.common.props" Condition="Exists('../../resources/build/PhxLib.common.props')"/>
-    <Import Project="../../resources/build/NugetProperties.props" Condition="Exists('../../resources/build/NugetProperties.props')"/>
-    <PropertyGroup>
-        <Version>$(VersionPhxTest)</Version>
-        <Description>Test verification and execution utilities.</Description>
-        <Copyright>Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.</Copyright>
-        <PackageProjectUrl>https://github.com/StarCruiseStudios/PhxTest</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/StarCruiseStudios/PhxTest</RepositoryUrl>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="NUnit" Version="$(VersionNUnit)"/>
-        <PackageReference Include="Phx.Lib" Version="$(VersionPhxLib)"/>
-        <PackageReference Include="Phx.Validation" Version="$(VersionPhxValidation)"/>
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(MSBuildProjectName)' != 'Phx.Lib' ">
-        <PackageReference Include="NLog" Version="$(VersionNLog)"/>
-    </ItemGroup>
-
+    <Import Project="../stash/nuget/NugetProperties.props" Condition="Exists('../stash/nuget/NugetProperties.props')"/>
+    <Import Project="Cobalt.props" Condition="Exists('Cobalt.props')"/>
+    
     <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
         <PropertyGroup>
             <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
         </PropertyGroup>
-        <Error Condition="!Exists('../../resources/build/PhxLib.common.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))"/>
-        <Error Condition="!Exists('../../resources/build/NugetProperties.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/NugetProperties.props'))"/>
+        <Error Condition="!Exists('Cobalt.props')" Text="$([System.String]::Format('$(ErrorText)', 'Cobalt.props'))"/>
+        <Error Condition="!Exists('../stash/nuget/NugetProperties.props')" Text="$([System.String]::Format('$(ErrorText)', '../stash/nuget/NugetProperties.props'))"/>
     </Target>
-
+    
 </Project>

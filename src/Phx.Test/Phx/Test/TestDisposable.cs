@@ -12,7 +12,7 @@ namespace Phx.Test {
     using Phx.Lang;
 
     /// <summary> An <see cref="ICheckedDisposable" /> that can be set and used inside test cases. </summary>
-    [DebuggerDisplay(IDebugDisplay.DEBUGGER_DISPLAY_STRING)]
+    [DebuggerDisplay(DebugDisplay.DEBUGGER_DISPLAY_STRING)]
     public sealed class TestDisposable : ICheckedDisposable, IDebugDisplay {
         /// <summary> Gets a value that indicates whether the object is disposed. </summary>
         public bool IsDisposed { get; private set; }
